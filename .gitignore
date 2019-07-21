@@ -1,0 +1,17 @@
+# UE4 generated files
+
+*/Binaries
+*/Build
+*/DerivedDataCache
+*/Intermediate
+*/Saved
+
+
+# UE4 generated files, only for this project
+
+BuildingEscape/Content/StarterContent
+
+
+# VisualStudio generated files
+
+*.VC.db
