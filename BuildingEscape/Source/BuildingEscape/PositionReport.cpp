@@ -2,6 +2,7 @@
 
 
 #include "PositionReport.h"
+#include "Gameframework/Actor.h"
 
 // Sets default values for this component's properties
 UPositionReport::UPositionReport()
@@ -21,8 +22,20 @@ void UPositionReport::BeginPlay()
 	// Super::___ means "do whatever happens in the thing I inherited it from (upstream), let it happen"
 	Super::BeginPlay(); 
 
-	// new code limited to this class here
-	
+	// new code (limited to this method only)
+
+	// Return the name as Fstring of the Actor being pointed at.
+	FString ObjectName = GetOwner()->GetName(); 
+	// The macro UE_LOG, for TEXT, uses * as an overload operator in ",*ObjectName" in order to get to the characters of the FString.
+	UE_LOG(LogTemp, Warning, TEXT("PositionReport for %s."),*ObjectName);
+
+
+/*  NOTE:
+	 %s strings are wanted as TCHAR* by Log, so use *FString()
+	//"MyCharacter's Name is %s"
+	UE_LOG(YourLog,Warning,TEXT("MyCharacter's Name is %s"), *MyCharacter->GetName() );
+*/
+
 }
 
 
