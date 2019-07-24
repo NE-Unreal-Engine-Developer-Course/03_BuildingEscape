@@ -12,7 +12,7 @@ public class BuildingEscapeEditorTarget : TargetRules
 		ExtraModuleNames.AddRange( new string[] { "BuildingEscape" } );
 
 		// Added in L70, allows to show errors related to missing *.h files.
-	// bUseUnityBuild = false;
-	// bUsePCHFiles = false;
+		// bUseUnityBuild = false;
+	 	// bUsePCHFiles = false;
 	}
 }
