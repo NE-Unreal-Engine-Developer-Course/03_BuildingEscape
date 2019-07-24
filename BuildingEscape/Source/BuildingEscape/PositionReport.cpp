@@ -27,6 +27,7 @@ void UPositionReport::BeginPlay()
 	// Return the name as Fstring of the Actor being pointed at.
 	FString ObjectName = GetOwner()->GetName(); 
 	// The macro UE_LOG, for TEXT, uses * as an overload operator in ",*ObjectName" in order to get to the characters of the FString.
+	// UE_LOG is expecting a TCHAR array, and the * (ov.op.) effectively converts the trsing to this type.
 	UE_LOG(LogTemp, Warning, TEXT("PositionReport for %s."),*ObjectName);
 
 

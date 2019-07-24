@@ -6,6 +6,7 @@ public class BuildingEscape : ModuleRules
 {
 	public BuildingEscape(ReadOnlyTargetRules Target) : base(Target)
 	{
+		// Please IWYU for me
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
