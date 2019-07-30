@@ -17,20 +17,26 @@ public:
 	// Sets default values for this component's properties
 	UOpenDoor();
 
-protected:
-	// Called when the game starts
+protected:	
+	 // Called when the game starts
 	virtual void BeginPlay() override;
+	// Called every frame
+	void OpenDoor(); 
 
-public:	
+public:		
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+
+	// Properties of clas that we can access via UE editor, details tab
 	UPROPERTY(VisibleAnywhere)
 	float OpenAngle = 75.0f;
-	
-	
+		
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate;
+	
+	UPROPERTY(EditAnywhere)
+	AActor* ActorThatOpens; // Pawn inherits from (is a) actor, now seletable in editor.
 	
 };

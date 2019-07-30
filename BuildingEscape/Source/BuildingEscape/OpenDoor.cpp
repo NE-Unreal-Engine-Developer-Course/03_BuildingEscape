@@ -20,26 +20,6 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	//float Zaxis = GetOwner()->GetTransform().GetRotation().Z;
-
-	AActor *Owner = GetOwner();
-	FString ObjectName = Owner->GetName(); 
-	
-	// Read and write in console actual rotation of component.
-	FString ObjectRotation = Owner->GetTransform().GetRotation().ToString(); 
-	UE_LOG(LogTemp, Warning, TEXT("%s rotation is %s."),*ObjectName, *ObjectRotation);
-
-	// setting up new rotation vector, values in deg, from 0 to 360
-	FRotator NewRotation = FRotator(0.0f, 300.0f, 0.0f); 
-	//FQuat NewRotation = {0.0f, 0.0f, 300.0f, 0.0f}; 
-	Owner->SetActorRotation(NewRotation);
-
-	// Read and write in console actual rotation of component.
-	FString ObjectRotation1 = Owner->GetTransform().GetRotation().ToString(); 
-	UE_LOG(LogTemp, Warning, TEXT("%s rotation is %s."),*ObjectName, *ObjectRotation1);
-	
 }
 
 
@@ -48,6 +28,27 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// Actor that opens is for now defined in h-file under private and set in UE editor.
+	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	{
+		OpenDoor();
+	}
 }
 
+
+
+// opens the door
+void UOpenDoor::OpenDoor()
+{
+	AActor *Owner = GetOwner();
+	FString ObjectName = Owner->GetName(); 
+	
+	// FQuat NewRotation = {0.0f, 0.0f, 300.0f, 0.0f}; 
+	FRotator NewRotation = FRotator(0.0f, 300.0f, 0.0f); 
+	Owner->SetActorRotation(NewRotation);
+
+	// Print new rotation in UE console
+	FString ObjectRotation = Owner->GetTransform().GetRotation().ToString(); 
+	UE_LOG(LogTemp, Warning, TEXT("%s rotation is %s."),*ObjectName, *ObjectRotation);
+
+}
