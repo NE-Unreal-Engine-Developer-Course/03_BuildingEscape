@@ -36,7 +36,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate;
 	
-	UPROPERTY(EditAnywhere)
-	AActor* ActorThatOpens; // Pawn inherits from (is a) actor, now seletable in editor.
+	AActor* ActorThatOpens; // Pawn inherits from (is a) actor, NOT seletable in editor anymore.
 	
 };

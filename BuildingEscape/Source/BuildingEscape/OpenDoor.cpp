@@ -3,6 +3,8 @@
 
 #include "OpenDoor.h"
 #include "Gameframework/Actor.h"
+#include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
 
 
 // Sets default values for this component's properties
@@ -20,6 +22,9 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+
 }
 
 
@@ -40,11 +45,14 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 // opens the door
 void UOpenDoor::OpenDoor()
 {
+	// Find the owning actor of this ActorComponent (h-file)
 	AActor *Owner = GetOwner();
 	FString ObjectName = Owner->GetName(); 
 	
-	// FQuat NewRotation = {0.0f, 0.0f, 300.0f, 0.0f}; 
+	// Define new rotating vector as FQuat NewRotation = {0.0f, 0.0f, 300.0f, 0.0f}: , or as
 	FRotator NewRotation = FRotator(0.0f, 300.0f, 0.0f); 
+	
+	// Set new rotation vector into owner.
 	Owner->SetActorRotation(NewRotation);
 
 	// Print new rotation in UE console
