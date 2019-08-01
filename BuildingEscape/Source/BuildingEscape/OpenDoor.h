@@ -21,7 +21,8 @@ protected:
 	 // Called when the game starts
 	virtual void BeginPlay() override;
 	// Called every frame
-	void OpenDoor(); 
+	void OpenDoor();
+	void CloseDoor(); 
 
 public:		
 	// Called every frame
@@ -30,12 +31,22 @@ public:
 private:
 
 	// Properties of clas that we can access via UE editor, details tab
-	UPROPERTY(VisibleAnywhere)
-	float OpenAngle = 75.0f;
+	UPROPERTY(EditAnywhere)
+	float OpenAngle = 270.0f;
 		
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate;
 	
+	UPROPERTY(EditAnywhere)
+	float DoorCloseDelay = 0.5f; 
+
+
+	// Find the owning actor of this ActorComponent (h-file)
+	AActor *Owner;
+
 	AActor* ActorThatOpens; // Pawn inherits from (is a) actor, NOT seletable in editor anymore.
+	
+	float LastDoorOpenTime;
+	float TimePlay;
 	
 };

@@ -22,6 +22,7 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
+	Owner = GetOwner();
 
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 
@@ -34,29 +35,31 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// Actor that opens is for now defined in h-file under private and set in UE editor.
-	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	// USE: if (PressurePlate && PressurePlate->IsOve.... if crashes.
+	if (PressurePlate && PressurePlate->IsOverlappingActor(ActorThatOpens))
 	{
 		OpenDoor();
+		// register last time actor overlapped.
+		LastDoorOpenTime = GetWorld()->GetTimeSeconds(); 
 	}
+
+	TimePlay = GetWorld()->GetTimeSeconds();
+	// Check if is time to close the door.	
+	if (TimePlay >= (LastDoorOpenTime + DoorCloseDelay))
+	{
+		CloseDoor();
+	}
+	
 }
 
 
 
-// opens the door
+// methods that opens and closes the door
 void UOpenDoor::OpenDoor()
 {
-	// Find the owning actor of this ActorComponent (h-file)
-	AActor *Owner = GetOwner();
-	FString ObjectName = Owner->GetName(); 
-	
-	// Define new rotating vector as FQuat NewRotation = {0.0f, 0.0f, 300.0f, 0.0f}: , or as
-	FRotator NewRotation = FRotator(0.0f, 300.0f, 0.0f); 
-	
-	// Set new rotation vector into owner.
-	Owner->SetActorRotation(NewRotation);
-
-	// Print new rotation in UE console
-	FString ObjectRotation = Owner->GetTransform().GetRotation().ToString(); 
-	UE_LOG(LogTemp, Warning, TEXT("%s rotation is %s."),*ObjectName, *ObjectRotation);
-
+	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
+}
+void UOpenDoor::CloseDoor()
+{
+	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
 }
