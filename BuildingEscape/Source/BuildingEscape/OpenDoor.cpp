@@ -33,9 +33,11 @@ void UOpenDoor::BeginPlay()
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+	// Get time in game
+	TimePlay = GetWorld()->GetTimeSeconds();
 
 	// Actor that opens is for now defined in h-file under private and set in UE editor.
-	// USE: if (PressurePlate && PressurePlate->IsOve.... if crashes.
 	if (PressurePlate && PressurePlate->IsOverlappingActor(ActorThatOpens))
 	{
 		OpenDoor();
@@ -43,7 +45,7 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		LastDoorOpenTime = GetWorld()->GetTimeSeconds(); 
 	}
 
-	TimePlay = GetWorld()->GetTimeSeconds();
+	
 	// Check if is time to close the door.	
 	if (TimePlay >= (LastDoorOpenTime + DoorCloseDelay))
 	{
