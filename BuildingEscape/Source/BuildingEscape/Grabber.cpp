@@ -27,17 +27,32 @@ void UGrabber::BeginPlay()
 	Super::BeginPlay();
 	UE_LOG(LogTemp, Warning, TEXT("Grabber reporting for duty!"));
 	
-	// Look for attached PhysicsHandle in DefaultPawn_BP
+	// Look for attached PhysicsHandle in Owner
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle)
 	{
 		// Do nothing if works
-		UE_LOG(LogTemp,Warning,TEXT("%s PhysicsHandleComponent present"), *GetOwner()->GetName())
+		UE_LOG(LogTemp,Warning,TEXT("%s present PhysicsHandleComponent "), *GetOwner()->GetName())
 	}
 	else
 	{
-		UE_LOG(LogTemp,Error,TEXT("%s PhysicsHandleComponent missing"), *GetOwner()->GetName())
+		UE_LOG(LogTemp,Error,TEXT("%s missing PhysicsHandleComponent"), *GetOwner()->GetName())
 	}
+
+	// Look for attached InputComponent in Owner (at runtime, not listed in UE->Details tab!)
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (InputComponent)
+	{
+		// Do nothing if works
+		UE_LOG(LogTemp,Warning,TEXT("%s present InputComponent"), *GetOwner()->GetName())
+		InputComponent->BindAction("Grab", IE_Pressed,this, &UGrabber::Grab);
+		InputComponent->BindAction("Grab", IE_Released,this, &UGrabber::Release);
+	}
+	else
+	{
+		UE_LOG(LogTemp,Error,TEXT("%s missing InputComponent"), *GetOwner()->GetName())
+	}
+
 }
 
 
@@ -86,3 +101,14 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	}
 }
 
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Grab key pressed"))
+
+}
+
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Release key pressed"))
+
+}
