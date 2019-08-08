@@ -16,43 +16,15 @@ UGrabber::UGrabber()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
 // Called when the game starts
 void UGrabber::BeginPlay()
 {
-	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("Grabber reporting for duty!"));
-	
-	// Look for attached PhysicsHandle in Owner
-	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle)
-	{
-		// Do nothing if works
-		UE_LOG(LogTemp,Warning,TEXT("%s present PhysicsHandleComponent "), *GetOwner()->GetName())
-	}
-	else
-	{
-		UE_LOG(LogTemp,Error,TEXT("%s missing PhysicsHandleComponent"), *GetOwner()->GetName())
-	}
-
-	// Look for attached InputComponent in Owner (at runtime, not listed in UE->Details tab!)
-	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
-	if (InputComponent)
-	{
-		// Do nothing if works
-		UE_LOG(LogTemp,Warning,TEXT("%s present InputComponent"), *GetOwner()->GetName())
-		InputComponent->BindAction("Grab", IE_Pressed,this, &UGrabber::Grab);
-		InputComponent->BindAction("Grab", IE_Released,this, &UGrabber::Release);
-	}
-	else
-	{
-		UE_LOG(LogTemp,Error,TEXT("%s missing InputComponent"), *GetOwner()->GetName())
-	}
-
+	Super::BeginPlay();		// IDE UActorComponent do stuff in the engine (inherited from UActor.)
+	FindPhysicsHandleComponent();
+	SetupInputComponent();
 }
 
 
@@ -61,26 +33,73 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// If the physics handle is attached
+		
+		// move the object that we're holdig
+
+	
+}
+
+void UGrabber::FindPhysicsHandleComponent()
+{
+	// Look for attached PhysicsHandle in Owner
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (PhysicsHandle)
+	{
+		// Do nothing if works
+	}
+	else
+	{
+		UE_LOG(LogTemp,Error,TEXT("%s missing PhysicsHandleComponent"), *GetOwner()->GetName())
+	}
+}
+
+void UGrabber::SetupInputComponent()
+{
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (InputComponent)
+	{	
+		UE_LOG(LogTemp,Warning,TEXT("%s found InputComponent."), *GetOwner()->GetName())
+		InputComponent->BindAction("Grab", IE_Pressed,this, &UGrabber::Grab);
+		InputComponent->BindAction("Grab", IE_Released,this, &UGrabber::Release);
+	}
+	else
+	{
+		UE_LOG(LogTemp,Error,TEXT("%s missing InputComponent."), *GetOwner()->GetName())
+	}
+}
+
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Grab key pressed"))
+
+	// Line trace and see if it reaches any actor with physics body collision channel set
+	GetFirstPhysicsBodyInReach();
+
+	// If we hit something then attached physics handle
+	// TODO attach physics handle
+
+}
+
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Release key pressed"))
+
+	// TODO release physics handle
+
+}
+
+FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
+{
 	// Get player view point every tick	
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
-
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
 		OUT PlayerViewPointLocation,
 		OUT PlayerViewPointRotation);
 	
 	// Draw a red trace in the world to visualise
 	FVector LineTraceEnd = PlayerViewPointLocation + Reach*PlayerViewPointRotation.Vector();
-	DrawDebugLine(
-		GetWorld(),
-		PlayerViewPointLocation,
-		LineTraceEnd,
-		FColor(0,0,255), 
-		false,
-		0.f,
-		0.f,
-		5.f
-	);
 		
 	// Line-trace (aso know as Ray-cast) out-to-reach disntance (cacl. distant of nearest object)
 	FHitResult Hit;
@@ -99,16 +118,5 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Line trace hit %s."),*(ActorHit->GetName()))
 	}
-}
-
-void UGrabber::Grab()
-{
-	UE_LOG(LogTemp,Warning,TEXT("Grab key pressed"))
-
-}
-
-void UGrabber::Release()
-{
-	UE_LOG(LogTemp,Warning,TEXT("Release key pressed"))
-
+	return Hit;
 }
