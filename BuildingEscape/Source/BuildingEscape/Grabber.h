@@ -27,9 +27,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+	
 	float Reach = 100.f;
 		
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
+
 	UInputComponent* InputComponent = nullptr;
 	
 	// Ray-cast and grab what's in reach
@@ -46,5 +48,8 @@ private:
 
 	// Return hir for first physics body in reach
 	FHitResult GetFirstPhysicsBodyInReach() const;
+	
+	// Returns end of Reach line
+	FTwoVectors GetReachLinePointsLocation() const;
 
 };
