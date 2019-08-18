@@ -30,8 +30,8 @@ void UGrabber::BeginPlay()
 }
 
 void UGrabber::FindPhysicsHandleComponent()
-{
-	// Look for attached PhysicsHandle in Owner
+{	
+	// Find for attached PhysicsHandle in Owner and assing a pointer to it.
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle == nullptr) 
 	{
@@ -59,10 +59,11 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// If the physics handle is attached
+	if (!PhysicsHandle) {return;}
 	if (PhysicsHandle->GrabbedComponent)
 	{
 		// move the object that we're holdig
-		PhysicsHandle->SetTargetLocation(GetReachLinePointsLocation().v2);
+		PhysicsHandle->SetTargetLocation(GetReachLinePointLocations().v2);
 	}		
 }
 
@@ -76,6 +77,7 @@ void UGrabber::Grab()
 	// If we hit something then attached physics handle
 	if (ActorHit) 
 	{		
+		if (!PhysicsHandle) {return;}
 		// Attach physics handle
 		PhysicsHandle->GrabComponentAtLocationWithRotation(
 			ComponentToGrab, 
@@ -88,6 +90,7 @@ void UGrabber::Grab()
 
 void UGrabber::Release()
 {
+	if (!PhysicsHandle) {return;}
 	PhysicsHandle->ReleaseComponent();
 }
 
@@ -98,22 +101,22 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 	FCollisionQueryParams TraceParameter(FName(TEXT("")), false, GetOwner());
 	GetWorld()->LineTraceSingleByObjectType(
 		OUT HitResult, 
-		GetReachLinePointsLocation().v1, // Start
-		GetReachLinePointsLocation().v2, // End
+		GetReachLinePointLocations().v1, // Start
+		GetReachLinePointLocations().v2, // End
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParameter
 	);
 	return HitResult;
 }
 
-FTwoVectors UGrabber::GetReachLinePointsLocation() const
+FTwoVectors UGrabber::GetReachLinePointLocations() const
 {
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
 		OUT PlayerViewPointLocation,
 		OUT PlayerViewPointRotation);
-	
+
 	FVector EndPointLocation =  PlayerViewPointLocation + Reach*PlayerViewPointRotation.Vector();
 	return FTwoVectors(PlayerViewPointLocation, EndPointLocation);
 }

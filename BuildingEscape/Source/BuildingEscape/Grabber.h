@@ -50,6 +50,6 @@ private:
 	FHitResult GetFirstPhysicsBodyInReach() const;
 	
 	// Returns end of Reach line
-	FTwoVectors GetReachLinePointsLocation() const;
+	FTwoVectors GetReachLinePointLocations() const;
 
 };

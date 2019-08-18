@@ -35,17 +35,15 @@ private:
 	float OpenAngle = 270.0f;
 		
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume* PressurePlate;
+	ATriggerVolume* PressurePlate = nullptr;
 	
 	UPROPERTY(EditAnywhere)
 	float DoorCloseDelay = 0.5f; 
 
+	float GetTotalMassOfActorsOnPlate();
 
-	// Find the owning actor of this ActorComponent (h-file)
-	AActor *Owner;
-
-	AActor* ActorThatOpens; // Pawn inherits from (is a) actor, NOT seletable in editor anymore.
-	
+	// Find the owning actor of this Actor Component
+	AActor *Owner = nullptr;
 	float LastDoorOpenTime;
 	float TimePlay;
 	
