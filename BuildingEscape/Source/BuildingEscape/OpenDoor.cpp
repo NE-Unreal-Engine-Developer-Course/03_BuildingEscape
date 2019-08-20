@@ -13,8 +13,6 @@ UOpenDoor::UOpenDoor()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -22,13 +20,11 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-	Owner = GetOwner();
 
 	if(!PressurePlate)
 	{
 		UE_LOG(LogTemp,Error,TEXT("%s missing PressurePlate."), *GetOwner()->GetName())
 	}
-
 }
 
 
@@ -37,37 +33,14 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	// Get time in game
-	TimePlay = GetWorld()->GetTimeSeconds();
-
-	// Actor that opens is for now defined in h-file under private and set in UE editor.
-	if (GetTotalMassOfActorsOnPlate() >30.f)
+	if (GetTotalMassOfActorsOnPlate() > TriggerMass)
 	{
-		OpenDoor();
-		// register last time actor overlapped.
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds(); 
+		OnOpen.Broadcast();
 	}
-
-	
-	// Check if is time to close the door.	
-	if (TimePlay >= (LastDoorOpenTime + DoorCloseDelay))
+	else
 	{
-		CloseDoor();
-	}
-	
-}
-
-
-
-// methods that opens and closes the door
-void UOpenDoor::OpenDoor()
-{
-	// Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
-	OnOpenRequest.Broadcast();
-}
-void UOpenDoor::CloseDoor()
-{
-	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
+		OnClose.Broadcast();
+	}	
 }
 
 float UOpenDoor::GetTotalMassOfActorsOnPlate()
@@ -82,11 +55,9 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate()
 
 	for (const auto* Actor : OverlappingActors)
 	{
-		//if(!Actor){return TotalMass;}
 		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
 		UE_LOG(LogTemp,Warning,TEXT("%s on pressure plate"), *Actor->GetName())	
 	}
-
 
 	return TotalMass;
 }
